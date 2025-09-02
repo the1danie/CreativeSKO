@@ -1,0 +1,24 @@
+/* растягиваем space */
+.hg-button.hg-space {
+    flex: 1 1 200px; /* широкая клавиша */
+  }
+  
+  .hg-button.hg-lang {
+    flex: 1 0 0px;
+    max-width: 120px;
+    font-size: 16px;
+    padding: 0 4px;
+  }
+
+  /* shift делаем шире чем буквы */
+  .hg-button.hg-shift {
+    flex: 1 1 80px;
+  }
+  
+  /* enter — тоже широкая, справа у L */
+  .hg-button.hg-enter {
+    flex: 1 1 100px;
+    background: #e9531e;
+    color: #fff;
+  }
+  
