@@ -1,0 +1,19 @@
+/* выбранная кнопка */
+.orange-radio .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  background-color: rgba(233, 83, 30, 0.13) !important; /* #E9531E с 13% прозрачности */
+  border-color: #E9531E !important; 
+  color: #E9531E !important;
+}
+
+/* hover по выбранной */
+.orange-radio .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  background-color: rgba(233, 83, 30, 0.25) !important; /* немного насыщенней при hover */
+  border-color: #cc4212 !important;
+  color: #cc4212 !important;
+}
+
+/* hover по невыбранным */
+.orange-radio .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked):hover {
+  border-color: #E9531E !important;
+  color: #E9531E !important;
+}
