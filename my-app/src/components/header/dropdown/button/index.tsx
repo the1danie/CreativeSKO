@@ -33,7 +33,7 @@ const DropdownButton: React.FC<Props> = ({ title, items, selectedLabel, onSelect
         >
           <Button size="large" type="default" className="orange-outlined">
             <Space>
-              {selectedLabel || title} {/* 👈 если выбрано — показываем */}
+              {selectedLabel || title}
               <DownOutlined />
             </Space>
           </Button>

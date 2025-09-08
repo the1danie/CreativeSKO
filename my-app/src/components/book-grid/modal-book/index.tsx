@@ -3,6 +3,7 @@ import { Modal, Button } from 'antd';
 import { QRCodeCanvas } from 'qrcode.react';
 import type { Book } from '../book-card/types';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // Иконки социальных сетей
 const InstagramIcon = () => (
@@ -27,6 +28,7 @@ type Props = {
 const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
     const url = book.pdfUrl || ''; // 👈 вместо getShareLink
     const streamUrl = book.streamUrl || '';
+    const { t } = useTranslation("translation");
 
     const navigate = useNavigate();
 
@@ -56,7 +58,7 @@ const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
                                 });
                             }}
                         >
-                            Перейти по книге
+                            {t('go_to_book')}
                         </Button>
 
                         <div className="w-32 h-40 rounded-md overflow-hidden">
@@ -68,7 +70,7 @@ const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
                                 />
                             ) : (
                                 <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
-                                    Нет обложки
+                                    {t('no_cover')}
                                 </div>
                             )}
                         </div>
@@ -99,8 +101,8 @@ const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
             )}
 
             {/* Инструкция внизу */}
-            <div className="text-center text-gray-600 text-sm mt-4 pb-4 text-xl">
-                Чтобы скачать книгу, отсканируйте данный QR-код
+            <div className="text-center text-gray-600 mt-4 pb-4 text-xl">
+                {t('scan_qr_to_download')}
             </div>
         </Modal>
     );

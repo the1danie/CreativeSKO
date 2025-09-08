@@ -1,11 +1,13 @@
 import React from "react";
 import type { Book } from "./types";
 import ModalBook from "../modal-book";
+import { useTranslation } from "react-i18next";
 
 type Props = { book: Book };
 
 const BookCard: React.FC<Props> = ({ book }) => {
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation("translation");
 
   return (
     <>
@@ -22,7 +24,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-gray-400 text-xs p-3 text-center z-10">
-              Нет обложки
+              {t('no_cover')}
             </div>
           )}
         </div>
