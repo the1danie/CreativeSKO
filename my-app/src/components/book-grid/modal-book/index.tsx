@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'antd';
 import { QRCodeCanvas } from 'qrcode.react';
-import { getShareLink } from '@lib/api/getShareLink';
 import type { Book } from '../book-card/types';
 import { useNavigate } from 'react-router-dom';
 

@@ -25,11 +25,12 @@ const LanguageSwitcher: React.FC = () => {
   // Синхронизация стора с i18n (после перезагрузки страницы и при смене языка извне)
   useEffect(() => {
     const normalize = (lng?: string): Language => {
-      const v = (lng || '').toLowerCase();
-      if (v.startsWith('ru')) return 'ru';
-      if (v.startsWith('kz')) return 'kz';
-      return 'en';
+      const v = (lng || "").toLowerCase();
+      if (v.startsWith("ru")) return "RU";
+      if (v.startsWith("kz")) return "KZ";
+      return "EN";
     };
+    
 
     const initial = normalize(i18n.resolvedLanguage || i18n.language);
     if (language !== initial) {
