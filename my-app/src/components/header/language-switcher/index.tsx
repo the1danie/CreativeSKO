@@ -12,7 +12,7 @@ const options: CheckboxGroupProps<string>['options'] = [
 ];
 
 const LanguageSwitcher: React.FC = () => {
-  const { i18n, t } = useTranslation('translation');
+  const { i18n } = useTranslation('translation');
   const { language, setLanguage } = useLanguageStore();
 
   const handleLanguageChange = (e: RadioChangeEvent) => {
