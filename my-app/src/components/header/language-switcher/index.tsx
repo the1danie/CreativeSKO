@@ -14,7 +14,6 @@ const options: CheckboxGroupProps<string>['options'] = [
 const LanguageSwitcher: React.FC = () => {
   const { i18n, t } = useTranslation('translation');
   const { language, setLanguage } = useLanguageStore();
-  console.log('Тест перевода:', t('welcome', 'Перевод работает!'));
 
   const handleLanguageChange = (e: RadioChangeEvent) => {
     const next = e.target.value as Language;
@@ -26,9 +25,9 @@ const LanguageSwitcher: React.FC = () => {
   useEffect(() => {
     const normalize = (lng?: string): Language => {
       const v = (lng || "").toLowerCase();
-      if (v.startsWith("ru")) return "RU";
-      if (v.startsWith("kz")) return "KZ";
-      return "EN";
+      if (v.startsWith("ru")) return "ru";
+      if (v.startsWith("kz")) return "kz";
+      return "en";
     };
     
 

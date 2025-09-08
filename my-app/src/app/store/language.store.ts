@@ -1,7 +1,7 @@
 // store/useKeyboardStore.ts
 import { create } from "zustand";
 
-export type Language = "RU" | "EN" | "KZ";
+export type Language = "ru" | "kz" | "en";
 
 interface LanguageState {
   language: Language;
@@ -9,6 +9,6 @@ interface LanguageState {
 }
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-  language: "RU",
+  language: "ru",
   setLanguage: (lang) => set({ language: lang }),
 }));
