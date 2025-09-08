@@ -7,9 +7,7 @@ import App from './App.tsx'
 import './localization/i18n'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
     <BrowserRouter>
       <App />
-    </BrowserRouter>
-  </StrictMode>,
+    </BrowserRouter>,
 )

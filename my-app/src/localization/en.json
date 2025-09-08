@@ -1,5 +1,8 @@
 {
-    "welcome": "Welcome",
-    "button.save": "Save",
-    "button.cancel": "Cancel"
+  "categories": "Categories",
+  "catalogs": "Catalogs",
+  "input": "Enter the book title",
+  "search": "Search",
+  "allCategories": "All categories",
+  "allCatalogs": "All catalogs"
 }

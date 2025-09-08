@@ -1,8 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ConfigProvider, Input } from "antd";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import "./keyboard.css"; // подключим стили
+import { useTranslation } from "react-i18next";
+import { useSearchStore } from "@app/store/search.store";
 
 const { Search } = Input;
 
@@ -11,7 +13,7 @@ type KeyboardLayout = {
   shift: string[];
 };
 
-const layouts: Record<"en" | "ru", KeyboardLayout> = {
+const layouts: Record<"en" | "ru" | "kz", KeyboardLayout> = {
   en: {
     default: [
       "q w e r t y u i o p",
@@ -40,6 +42,20 @@ const layouts: Record<"en" | "ru", KeyboardLayout> = {
       "{lang} {space}",
     ],
   },
+  kz: {
+    default: [
+      "ә ғ қ ө ү ұ і һ е н г ш щ з х ъ",
+      "ф ы в а п р о л д ж э {enter}",
+      "{shift} я ч с м и т ь б ю . {bksp}",
+      "{lang} {space}",
+    ],
+    shift: [
+      "Ә Ғ Қ Ө Ү Ұ І Һ Е Н Г Ш Щ З Х Ъ",
+      "Ф Ы В А П Р О Л Д Ж Э {enter}",
+      "{shift} Я Ч С М И Т Ь Б Ю , {bksp}",
+      "{lang} {space}",
+    ],
+  },
 };
 
 interface SearchBarProps {
@@ -47,11 +63,37 @@ interface SearchBarProps {
 }
 
 const SearchWithKeyboard: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [value, setValue] = useState("");
+  const { t, i18n } = useTranslation('translation');
+  const query = useSearchStore((s) => s.query);
+  const setQuery = useSearchStore((s) => s.setQuery);
   const [layoutName, setLayoutName] = useState<"default" | "shift">("default");
-  const [currentLang, setCurrentLang] = useState<"en" | "ru">("en");
+  const [currentLang, setCurrentLang] = useState<"en" | "ru" | "kz">((() => {
+    const v = (i18n.resolvedLanguage || i18n.language || "en").toLowerCase();
+    if (v.startsWith("ru")) return "ru";
+    if (v.startsWith("kz")) return "kz";
+    return "en";
+  })());
   const [showKeyboard, setShowKeyboard] = useState(false);
   const keyboardRef = useRef<import("simple-keyboard").default | null>(null);
+
+  // Следим за сменой языка в i18n и обновляем раскладку клавиатуры
+  useEffect(() => {
+    const normalize = (lng?: string): "en" | "ru" | "kz" => {
+      const v = (lng || "").toLowerCase();
+      if (v.startsWith("ru")) return "ru";
+      if (v.startsWith("kz")) return "kz";
+      return "en";
+    };
+    const initial = normalize(i18n.resolvedLanguage || i18n.language);
+    if (initial !== currentLang) {
+      setCurrentLang(initial);
+    }
+    const onChanged = (lng: string) => setCurrentLang(normalize(lng));
+    i18n.on("languageChanged", onChanged);
+    return () => {
+      i18n.off("languageChanged", onChanged);
+    };
+  }, [i18n, currentLang]);
 
   const handleSearch = (val: string) => {
     if (onSearch) {
@@ -61,7 +103,7 @@ const SearchWithKeyboard: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   const onChange = (val: string) => {
-    setValue(val);
+    setQuery(val);
   };
 
   const handleKeyPress = (button: string) => {
@@ -69,11 +111,13 @@ const SearchWithKeyboard: React.FC<SearchBarProps> = ({ onSearch }) => {
       setLayoutName(layoutName === "default" ? "shift" : "default");
     }
     if (button === "{lang}") {
-      setCurrentLang((prev) => (prev === "en" ? "ru" : "en"));
+      const next = currentLang === "en" ? "ru" : currentLang === "ru" ? "kz" : "en";
+      // Меняем язык всего приложения; currentLang обновится по событию languageChanged
+      i18n.changeLanguage(next);
       setLayoutName("default");
     }
     if (button === "{enter}") {
-      handleSearch(value);
+      handleSearch(query);
     }
   };
 
@@ -89,13 +133,13 @@ const SearchWithKeyboard: React.FC<SearchBarProps> = ({ onSearch }) => {
         }}
       >
         <Search
-          value={value}
-          placeholder="Введите название"
+          value={query}
+          placeholder={t('input')}
           allowClear
-          enterButton="Найти"
+          enterButton={t('search')}
           size="large"
           style={{ width: "100%" }}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           onSearch={handleSearch}
           onFocus={() => setShowKeyboard(true)}
         />
@@ -130,7 +174,7 @@ const SearchWithKeyboard: React.FC<SearchBarProps> = ({ onSearch }) => {
             buttonTheme={[
               { class: "hg-space", buttons: "{space}" },
               { class: "hg-shift", buttons: "{shift}" },
-              { class: "hg-lang", buttons: "{lang}" },
+              { class: "hg-langц", buttons: "{lang}" },
               { class: "hg-enter", buttons: "{enter}" },
             ]}
           />

@@ -4,5 +4,6 @@ export type Book = {
     author: string;
     imageUrl?: string; // jpg/png/svg
     pdfUrl?: string;   // путь к pdf (из public или URL)
+    streamUrl?: string;
   };
   

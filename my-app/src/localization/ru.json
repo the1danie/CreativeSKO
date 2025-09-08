@@ -1,6 +1,8 @@
 {
-    "welcome": "Добро пожаловать",
-    "button.save": "Сохранить",
-    "button.cancel": "Отмена"
-  }
-  
+  "categories": "Категории",
+  "catalogs": "Каталоги",
+  "input": "Введите название книги",
+  "search": "Найти",
+  "allCategories": "Все категории",
+  "allCatalogs": "Все каталоги"
+}

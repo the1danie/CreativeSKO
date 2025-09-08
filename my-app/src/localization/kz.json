@@ -1,5 +1,8 @@
 {
-    "welcome": "Қош келдіңіз",
-    "button.save": "Сақтау",
-    "button.cancel": "Болдырмау"
+  "categories": "Санаттар",
+  "catalogs": "Каталогтар",
+  "input": "Кітаптың атауын енгізіңіз",
+  "search": "Іздеу",
+  "allCategories": "Барлық санаттар",
+  "allCatalogs": "Барлық каталогтар"
 }
