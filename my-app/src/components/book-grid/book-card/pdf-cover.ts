@@ -43,6 +43,7 @@ export async function getPdfCoverDataUrl(
   canvas.height = Math.floor(scaled.height);
 
   await page.render({
+    canvas,
     canvasContext: ctx,
     viewport: scaled,
   }).promise;
