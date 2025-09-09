@@ -75,14 +75,18 @@ function App() {
         if (target.isIntersecting && !loading && filteredBooks.length < total) {
           setLoading(true);
           try {
-            await fetchBooks(page + 1, true); // загружаем следующую страницу
+            await fetchBooks(page + 1, true);
           } finally {
             setLoading(false);
           }
         }
       },
-      { threshold: 1.0 }
+      {
+        rootMargin: "200px", // 👈 подгружает заранее
+        threshold: 0.1,      // 👈 достаточно, чтобы часть элемента показалась
+      }
     );
+    
 
     if (loaderRef.current) observer.observe(loaderRef.current);
 
