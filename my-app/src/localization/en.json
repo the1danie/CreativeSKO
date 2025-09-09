@@ -1,11 +1,13 @@
 {
   "categories": "Categories",
-  "catalogs": "Catalogs",
+  "authors": "Authors",
+  "allAuthors": "All authors",
   "input": "Enter the book title",
   "search": "Search",
   "allCategories": "All categories",
-  "allCatalogs": "All catalogs",
   "go_to_book": "Go to book",
   "no_cover": "No cover",
-  "scan_qr_to_download": "Scan this QR code to download the book"
+  "scan_qr_to_download": "Scan this QR code to download the book",
+  "loading": "Loading...",
+  "noBooks": "No books found"
 }

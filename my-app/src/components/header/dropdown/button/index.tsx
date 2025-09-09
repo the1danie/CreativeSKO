@@ -24,12 +24,14 @@ const DropdownButton: React.FC<Props> = ({ title, items, selectedLabel, onSelect
         <Dropdown
           menu={{
             items,
+            style: { maxHeight: 300, overflowY: "auto" }, // 👈 сразу на меню
             onClick: (info) => {
               const selected = items.find((i) => i.key === info.key);
               if (onSelect && selected) onSelect(info.key, selected.label);
             },
           }}
           trigger={["click"]}
+          placement="bottomLeft" // 👈 можно менять направление (вверх/вниз)
         >
           <Button size="large" type="default" className="orange-outlined">
             <Space>
@@ -38,6 +40,8 @@ const DropdownButton: React.FC<Props> = ({ title, items, selectedLabel, onSelect
             </Space>
           </Button>
         </Dropdown>
+
+
       </Space>
     </ConfigProvider>
   );

@@ -3,7 +3,13 @@ import { create } from "zustand";
 import axios from "axios";
 
 type Category = { id: number; name_en: string; name_ru: string; name_kz: string };
-type Catalog = { id: number; title_en: string; title_ru: string; title_kz: string };
+type Author = {
+  id: number;
+  name_en: string;
+  name_ru: string;
+  name_kz: string;
+  count?: number;
+};
 type Book = {
   id: number;
   title_en: string;
@@ -13,52 +19,69 @@ type Book = {
   catalog_id: number | null;
   cover_url: string;
   year: number;
-  author: { id: number; name_en: string; name_ru: string; name_kz: string };
+  author: Author;
 };
 
 type LibraryStore = {
   books: Book[];
   filteredBooks: Book[];
   categories: Category[];
-  catalogs: Catalog[];
-  fetchBooks: () => Promise<void>;
+  authors: Author[];
+  page: number;
+  limit: number;
+  total: number;
+  selectedCategoryId: string | null;
+  selectedCatalogId: string | null;
+  selectedAuthorId: string | null;
+  fetchBooks: (page?: number, append?: boolean) => Promise<void>;
   fetchCategories: () => Promise<void>;
-  fetchCatalogs: () => Promise<void>;
-  filterBooks: (categoryId: string | null, catalogId: string | null) => void;
+  fetchAuthors: () => Promise<void>;
+  setCategory: (id: string | null) => void;
+  setCatalog: (id: string | null) => void;
+  setAuthor: (id: string | null) => void;
 };
 
 export const useLibraryStore = create<LibraryStore>((set, get) => ({
   books: [],
   filteredBooks: [],
   categories: [],
-  catalogs: [],
+  authors: [],
+  page: 1,
+  limit: 20,
+  total: 0,
+  selectedCategoryId: null,
+  selectedCatalogId: null,
+  selectedAuthorId: null,
 
-  fetchBooks: async () => {
-    const { data } = await axios.get("https://libdjango.fm64.me/api/v1/books");
-    set({ books: data.data, filteredBooks: data.data });
+  fetchBooks: async (page = 1, append = false) => {
+    const { limit, selectedCategoryId, selectedCatalogId, selectedAuthorId } = get();
+
+    const params: any = { page, limit };
+    if (selectedCategoryId) params.categoryId = selectedCategoryId;
+    if (selectedCatalogId) params.catalogId = selectedCatalogId;
+    if (selectedAuthorId) params.authorId = selectedAuthorId;
+
+    const { data } = await axios.get("https://libdjango.fm64.me/api/v1/books", { params });
+
+    set((state) => ({
+      books: append ? [...state.books, ...data.data] : data.data,
+      filteredBooks: append ? [...state.filteredBooks, ...data.data] : data.data,
+      page,
+      total: data.total,
+    }));
   },
 
   fetchCategories: async () => {
     const { data } = await axios.get("https://libdjango.fm64.me/api/v1/categories");
-    set({ categories: data.data }); // ⬅️ именно массив
-  },
-  
-  fetchCatalogs: async () => {
-    const { data } = await axios.get("https://libdjango.fm64.me/api/v1/catalogs");
-    set({ catalogs: data.data }); // ⬅️ именно массив
+    set({ categories: data.data });
   },
 
-  filterBooks: (categoryId, catalogId) => {
-    const { books } = get();
-    let filtered = books;
-
-    if (categoryId) {
-      filtered = filtered.filter((b) => String(b.category.id) === categoryId);
-    }
-    if (catalogId) {
-      filtered = filtered.filter((b) => String(b.catalog_id) === catalogId);
-    }
-
-    set({ filteredBooks: filtered });
+  fetchAuthors: async () => {
+    const { data } = await axios.get("https://libdjango.fm64.me/api/v1/authors");
+    set({ authors: data.data });
   },
+
+  setCategory: (id) => set({ selectedCategoryId: id }),
+  setCatalog: (id) => set({ selectedCatalogId: id }),
+  setAuthor: (id) => set({ selectedAuthorId: id }),
 }));

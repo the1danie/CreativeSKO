@@ -12,25 +12,26 @@ type Props = {
     title?: string;
     onSearch?: (query: string) => void;
     onSelectCategory?: (id: string | null) => void;
-    onSelectCatalog?: (id: string | null) => void;
+    onSelectAuthor?: (id: string | null) => void; // 👈 заменил
 };
 
-const Header: React.FC<Props> = ({ readbook = true, title, onSearch, onSelectCatalog, onSelectCategory }) => {
+const Header: React.FC<Props> = ({ readbook = true, title, onSearch, onSelectAuthor, onSelectCategory }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as { title?: string } | null;
     const readingTitle = title ?? state?.title ?? "";
     const { t, i18n } = useTranslation("translation");
 
-    const { categories, catalogs, fetchCategories, fetchCatalogs } = useLibraryStore();
+    const { categories, authors, fetchCategories, fetchAuthors } = useLibraryStore();
 
     const [selectedCategoryLabel, setSelectedCategoryLabel] = useState<string>();
-    const [selectedCatalogLabel, setSelectedCatalogLabel] = useState<string>();
+    const [selectedAuthorLabel, setSelectedAuthorLabel] = useState<string>(); // 👈 заменил
+
 
     useEffect(() => {
         fetchCategories();
-        fetchCatalogs();
-    }, [fetchCategories, fetchCatalogs]);
+        fetchAuthors();
+    }, [fetchCategories, fetchAuthors]);
 
     const currentLang = i18n.language.startsWith("ru")
         ? "ru"
@@ -74,22 +75,22 @@ const Header: React.FC<Props> = ({ readbook = true, title, onSearch, onSelectCat
                                 />
 
                                 <DropdownButton
-                                    title={t("catalogs")}
+                                    title={t("authors")}
                                     items={[
-                                        { key: "all", label: t("allCatalogs") }, // 👈 добавил
-                                        ...(catalogs ?? []).map((c) => ({
+                                        { key: "all", label: t("allAuthors") },
+                                        ...(authors ?? []).map((c) => ({
                                             key: String(c.id),
-                                            label: c[`title_${currentLang}` as keyof typeof c] as string,
+                                            label: c[`name_${currentLang}` as keyof typeof c] as string,
                                         })),
                                     ]}
-                                    selectedLabel={selectedCatalogLabel}
+                                    selectedLabel={selectedAuthorLabel}
                                     onSelect={(id, label) => {
                                         if (id === "all") {
-                                            onSelectCatalog?.(null); // сброс
-                                            setSelectedCatalogLabel(undefined);
+                                            onSelectAuthor?.(null);
+                                            setSelectedAuthorLabel(undefined);
                                         } else {
-                                            onSelectCatalog?.(id);
-                                            setSelectedCatalogLabel(label);
+                                            onSelectAuthor?.(id);
+                                            setSelectedAuthorLabel(label);
                                         }
                                     }}
                                 />
