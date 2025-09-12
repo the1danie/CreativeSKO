@@ -63,12 +63,16 @@ export const useLibraryStore = create<LibraryStore>((set, get) => ({
 
     const { data } = await axios.get("https://libdjango.fm64.me/api/v1/books", { params });
 
-    set((state) => ({
-      books: append ? [...state.books, ...data.data] : data.data,
-      filteredBooks: append ? [...state.filteredBooks, ...data.data] : data.data,
-      page,
-      total: data.total,
-    }));
+    set((state) => {
+      const newBooks = append ? [...state.books, ...data.data] : data.data;
+
+      return {
+        books: newBooks,
+        filteredBooks: newBooks,
+        page,                // 👈 сохраняем актуальную страницу
+        total: data.total,   // 👈 сохраняем общее количество книг
+      };
+    });
   },
 
   fetchCategories: async () => {

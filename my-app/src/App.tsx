@@ -20,7 +20,8 @@ function App() {
     setCategory,
     setAuthor,
   } = useLibraryStore(); // 👈 достаём setCategory и setAuthor
-  const [loading, setLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const { t } = useTranslation("translation");
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -28,11 +29,11 @@ function App() {
   // Первичная загрузка
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
+      setIsInitialLoading(true);
       try {
         await fetchBooks(1, false); // загружаем первую страницу
       } finally {
-        setLoading(false);
+        setIsInitialLoading(false);
       }
     };
     load();
@@ -72,28 +73,42 @@ function App() {
     const observer = new IntersectionObserver(
       async (entries) => {
         const target = entries[0];
-        if (target.isIntersecting && !loading && filteredBooks.length < total) {
-          setLoading(true);
+
+        if (
+          target.isIntersecting &&
+          !isInitialLoading &&
+          !isFetchingMore &&
+          filteredBooks.length < total
+        ) {
+          setIsFetchingMore(true);
           try {
             await fetchBooks(page + 1, true);
+          } catch (err) {
+            console.error("❌ Ошибка загрузки:", err);
           } finally {
-            setLoading(false);
+            setIsFetchingMore(false);
           }
         }
       },
       {
-        rootMargin: "200px", // 👈 подгружает заранее
-        threshold: 0.1,      // 👈 достаточно, чтобы часть элемента показалась
+        rootMargin: "200px",
+        threshold: 0.1,
       }
     );
-    
 
-    if (loaderRef.current) observer.observe(loaderRef.current);
+    // Наблюдаем только после первичной загрузки
+    const node = loaderRef.current;
+    if (node && !isInitialLoading) {
+      observer.observe(node);
+    }
 
     return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
+      if (node) {
+        observer.unobserve(node);
+      }
     };
-  }, [page, total, loading, filteredBooks, fetchBooks]);
+  }, [page, total, isInitialLoading, isFetchingMore, filteredBooks, fetchBooks]);
+
 
   return (
     <div className="min-h-screen text-foreground bg-section">
@@ -114,7 +129,7 @@ function App() {
                 }}
               />
               <main className="pt-30">
-                {loading && page === 1 ? (
+                {isInitialLoading && page === 1 ? (
                   <p className="text-center">{t('loading')}</p>
                 ) : searchedBooks.length === 0 ? (
                   <p className="text-center text-gray-500 mt-10">
@@ -123,12 +138,11 @@ function App() {
                 ) : (
                   <>
                     <BookGrid books={searchedBooks} />
-                    {/* Сторожок для IntersectionObserver */}
                     <div
                       ref={loaderRef}
                       className="h-10 flex justify-center items-center"
                     >
-                      {loading && <p>{t('loading')}</p>}
+                      {isFetchingMore && <p>{t('loading')}</p>}
                     </div>
                   </>
                 )}

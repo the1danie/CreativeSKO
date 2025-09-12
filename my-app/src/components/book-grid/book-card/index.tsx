@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Book } from "./types";
 import ModalBook from "../modal-book";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ type Props = { book: Book };
 const BookCard: React.FC<Props> = ({ book }) => {
   const [open, setOpen] = React.useState(false);
   const { t } = useTranslation("translation");
+  const [fit, setFit] = useState<'cover' | 'contain'>('cover');
 
   return (
     <>
@@ -15,12 +16,23 @@ const BookCard: React.FC<Props> = ({ book }) => {
         className="w-[250px] select-none cursor-pointer"
         onClick={() => setOpen(true)}
       >
-        <div className="relative aspect-[4/5] rounded-md overflow-hidden">
+        <div className="relative aspect-[4/5] rounded-md overflow-hidden bg-gray-100">
           {book.imageUrl ? (
+
             <img
               src={book.imageUrl}
               alt={book.title}
-              className="absolute inset-0 w-full h-full object-cover rounded-md"
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                const ratio = img.naturalWidth / img.naturalHeight;
+                // если картинка почти квадратная — лучше contain
+                if (ratio > 0.75 && ratio < 100) {
+                  setFit('cover');
+                } else {
+                  setFit('contain');
+                }
+              }}
+              className={`absolute inset-0 w-full h-full object-${fit} rounded-md bg-gray-100`}
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-gray-400 text-xs p-3 text-center z-10">
@@ -57,6 +69,7 @@ const BookCard: React.FC<Props> = ({ book }) => {
         cover={book.imageUrl ?? null}
         open={open}
         onClose={() => setOpen(false)}
+        fit={fit}
       />
     </>
   );

@@ -23,9 +23,10 @@ type Props = {
     cover: string | null;
     open: boolean;
     onClose: () => void;
+    fit?: 'cover' | 'contain';
 };
 
-const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
+const ModalBook: React.FC<Props> = ({ book, cover, open, onClose, fit }) => {
     const url = book.pdfUrl || ''; // 👈 вместо getShareLink
     const streamUrl = book.streamUrl || '';
     const { t } = useTranslation("translation");
@@ -66,8 +67,8 @@ const ModalBook: React.FC<Props> = ({ book, cover, open, onClose }) => {
                                 <img
                                     src={cover}
                                     alt={book.title}
-                                    className="w-full h-full object-cover rounded-md"
-                                />
+                                    className={`w-full h-full object-${fit} rounded-md`}
+                                    />
                             ) : (
                                 <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs">
                                     {t('no_cover')}
